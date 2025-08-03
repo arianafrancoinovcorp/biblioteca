@@ -2,9 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\User;
+use App\Models\Book;
+use App\Models\Author;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,11 +14,19 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        if (\App\Models\Publisher::count() === 0 || Author::count() === 0) {
+            $this->command->warn('Publishers e Authors criados antes de correr este seeder.');
+            return;
+        }
+
+        Book::factory()
+            ->count(20)
+            ->create()
+            ->each(function ($book) {
+                // Associa 1 a 3 autores
+                $authorIds = Author::inRandomOrder()->take(rand(1, 3))->pluck('id');
+                $book->authors()->attach($authorIds);
+            });
     }
 }
