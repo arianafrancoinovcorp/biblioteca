@@ -3,30 +3,25 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Publisher;
 
-class PublisherController extends Controller
+class AdminController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(Request $request)
+    public function __construct()
     {
-        $query = Publisher::query();
-    
-        if ($request->filled('search')) {
-            $query->where('name', 'like', '%' . $request->input('search') . '%');
-        }
-    
-        if ($request->filled('sort_by') && in_array($request->input('sort_by'), ['name'])) {
-            $direction = $request->input('sort_direction', 'asc');
-            $query->orderBy($request->input('sort_by'), $direction);
-        }
-    
-        $publishers = $query->simplePaginate(10)->appends($request->query());
-    
-        return view('publishers.index', compact('publishers'));
+        $this->middleware('auth');
+        $this->middleware(function ($request, $next) {
+            if (auth()->user()->role !== 'admin') {
+                abort(403, 'Access denied');
+            }
+            return $next($request);
+        });
     }
+
+    public function dashboard()
+    {
+        return view('admin.dashboard');
+    }
+
     /**
      * Show the form for creating a new resource.
      */

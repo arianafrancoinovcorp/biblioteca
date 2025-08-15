@@ -16,4 +16,8 @@
     color: white;
   }
 
-  
+  .active-border {
+    border-right-width: 4px;
+    border-right-style: solid;
+    border-right-color: #FE7F63;
+}
