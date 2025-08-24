@@ -21,16 +21,26 @@
 
                 <div class="flex flex-col md:flex-row gap-6">
 
-                    <form action="{{ route('requests.store') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('requests.store') }}" method="POST" enctype="multipart/form-data" class="w-full flex flex-col space-y-6">
                         @csrf
                         <input type="hidden" name="book_id" value="{{ $book->id }}">
 
                         <div class="mb-4">
-                            <label>Upload Photo (optional):</label><br>
-                            <input type="file" name="photo">
-                        </div>
+                            <label class="block mb-2 font-medium text-white">Upload Photo (optional):</label>
 
-                        <button class="btn btn-custom" type="submit">Submit Request</button>
+                            <div class="flex items-center">
+                                <label for="photo"
+                                    class="cursor-pointer bg-[#FE7F63] text-white px-4 py-2 rounded-md text-sm font-medium">
+                                    Choose File
+                                </label>
+                                <span id="file-name" class="ml-3 text-gray-600 text-sm">No file chosen</span>
+                            </div>
+
+                            <input type="file" name="photo" id="photo" class="hidden" onchange="updateFileName()">
+                        </div>
+                        <div class="flex justify-end">
+                            <button class="btn btn-custom" type="submit">Submit Request</button>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -38,3 +48,11 @@
     </div>
 </main>
 <x-layouts.app.custom-footer />
+
+<script>
+    function updateFileName() {
+        const input = document.getElementById('photo');
+        const fileName = input.files.length ? input.files[0].name : "No file chosen";
+        document.getElementById('file-name').textContent = fileName;
+    }
+</script>

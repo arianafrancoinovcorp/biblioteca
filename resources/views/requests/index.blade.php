@@ -37,7 +37,7 @@
                 <p class="text-gray-600 mt-1">Here you can see all book requests</p>
             </div>
         </div>
-
+        @if(auth()->user()->role === 'admin')
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
             <div class="bg-blue-100 text-blue-800 p-4 rounded shadow flex items-center gap-3">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -72,6 +72,7 @@
                 </div>
             </div>
         </div>
+        @endif
 
 
         <div class="overflow-x-auto rounded-lg shadow">
@@ -122,6 +123,9 @@
                 </tbody>
 
             </table>
+        </div>
+        <div class="mt-4">
+            {{ $requests->links() }}
         </div>
         @if(session('success'))
         <div class="mb-4 p-4 bg-green-100 text-green-800 rounded shadow">

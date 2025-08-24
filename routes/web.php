@@ -12,7 +12,6 @@ use App\Http\Controllers\RequestsController;
 use App\Http\Controllers\AdminController;
 
 // Home
-
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
@@ -27,6 +26,16 @@ Route::get('/users/dashboard', function () {
 Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])
     ->middleware('auth')
     ->name('admin.dashboard');
+
+Route::get('/dashboard', function () {
+    $user = auth()->user();
+
+    if ($user && $user->role === 'admin') {
+        return redirect()->route('admin.dashboard');
+    }
+
+    return redirect()->route('users.dashboard');
+})->middleware(['auth'])->name('dashboard');
 
 Route::middleware(['auth'])->group(function () {
 

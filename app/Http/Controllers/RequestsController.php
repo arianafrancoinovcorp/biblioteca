@@ -21,9 +21,14 @@ class RequestsController extends Controller
     public function index()
     {
         if (Auth::user()->isAdmin()) {
-            $requests = BookRequests::with('book', 'user')->orderByDesc('start_date')->get();
+            $requests = BookRequests::with('book', 'user')
+                ->orderByDesc('start_date')
+                ->paginate(10);
         } else {
-            $requests = BookRequests::with('book')->where('user_id', Auth::id())->orderByDesc('start_date')->get();
+            $requests = BookRequests::with('book')
+                ->where('user_id', Auth::id())
+                ->orderByDesc('start_date')
+                ->paginate(10);
         }
 
         $activeRequestsCount = BookRequests::where('status', 'active')->count();
