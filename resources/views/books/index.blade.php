@@ -98,7 +98,7 @@
                         {{ $author->name }}@if(!$loop->last), @endif
                         @endforeach
                     </td>
-                    <td class="border border-gray-300 px-4 py-2">{{ $book->bibliography }}</td>
+                    <td class="border border-gray-300 px-4 py-2">{{ \Illuminate\Support\Str::limit($book->bibliography, 100, '...') }}</td>
                     <td class="border border-gray-300 px-4 py-2">
                         @if ($book->cover_image)
                         <img src="{{ $book->cover_image }}" alt="{{ $book->name }}" class="h-12 w-12 rounded" />

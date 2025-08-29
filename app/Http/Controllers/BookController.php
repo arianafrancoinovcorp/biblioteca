@@ -52,26 +52,35 @@ class BookController extends Controller
     public function index(Request $request)
     {
         $query = Book::with('publisher', 'authors');
-
+    
         if ($request->filled('search')) {
             $search = $request->search;
+    
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('isbn', 'like', "%{$search}%");
+                  ->orWhere('isbn', 'like', "%{$search}%");
             });
+    
+            if (!$query->exists()) {
+                app(\App\Services\GoogleBooksService::class)->importBooks($search);
+    
+                $query = Book::with('publisher', 'authors')
+                    ->where('name', 'like', "%{$search}%")
+                    ->orWhere('isbn', 'like', "%{$search}%");
+            }
         }
-
+    
         if ($request->filled('publisher_id')) {
             $query->where('publisher_id', $request->publisher_id);
         }
-
+    
         if ($request->filled('author_id')) {
             $authorIds = $request->author_id;
             $query->whereHas('authors', function ($q) use ($authorIds) {
                 $q->whereIn('authors.id', (array)$authorIds);
             });
         }
-
+    
         $allowedSorts = ['name', 'isbn', 'price'];
         if ($request->filled('sort_by') && in_array($request->sort_by, $allowedSorts)) {
             $direction = $request->get('sort_direction', 'asc');
@@ -79,14 +88,15 @@ class BookController extends Controller
         } else {
             $query->latest();
         }
-
+    
         $books = $query->simplePaginate(10)->appends($request->query());
-
+    
         $publishers = Publisher::orderBy('name')->get();
         $authors = Author::orderBy('name')->get();
-
+    
         return view('books.index', compact('books', 'publishers', 'authors'));
     }
+    
 
     public function export(Request $request)
     {
