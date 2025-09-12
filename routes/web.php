@@ -12,6 +12,7 @@ use App\Http\Controllers\RequestsController;
 use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Http;
 use App\Http\Controllers\WelcomeController;
+use App\Http\Controllers\ReviewsController;
 
 // Home
 Route::get('/', [WelcomeController::class, 'index'])->name('home');
@@ -69,11 +70,22 @@ Route::middleware(['auth'])->group(function () {
     Route::get('requests/create/{book}', [RequestsController::class, 'create'])->name('requests.create');
     Route::post('requests', [RequestsController::class, 'store'])->name('requests.store');
     Route::get('requests', [RequestsController::class, 'index'])->name('requests.index');
-    Route::post('requests/{request}/return', [RequestsController::class, 'returnBook'])->name('requests.return');
-    Route::post('/requests/{request}/confirm', [RequestsController::class, 'confirm'])->name('requests.confirm');
+    Route::post('requests/{bookRequest}/return', [RequestsController::class, 'returnBook'])->name('requests.return');
+    Route::post('/requests/{bookRequest}/confirm', [RequestsController::class, 'confirm'])->name('requests.confirm');
 
     // Admin - Books
     Route::get('/admin/books', [BookController::class, 'adminIndex'])->name('admin.books.index');
+
+    Route::post('/requests/{id}/review', [App\Http\Controllers\ReviewsController::class, 'store'])
+    ->name('reviews.store');
+
+    Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
+        Route::get('/reviews', [ReviewsController::class, 'index'])->name('reviews.index');
+        Route::get('/reviews/{id}/edit', [ReviewsController::class, 'edit'])->name('reviews.edit');
+        Route::get('/reviews/{id}', [ReviewsController::class, 'show'])->name('reviews.show');
+        Route::put('/reviews/{id}', [ReviewsController::class, 'update'])->name('reviews.update');
+    });
+    
 });
 
 

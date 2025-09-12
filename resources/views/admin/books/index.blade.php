@@ -154,7 +154,7 @@
             </table>
         </div>
 
-        {{-- Paginação --}}
+        {{-- Pagination --}}
         <div class="mt-6">
             {{ $books->links() }}
         </div>

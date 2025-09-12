@@ -68,7 +68,7 @@
                 </svg>
                 <div>
                     <span class="text-sm font-medium"># Books Returned Today</span>
-                    <div class="text-2xl font-bold">{{ $deliveredTodayCount }}</div>
+                    <div class="text-2xl font-bold">{{ $returnedTodayCount }}</div>
                 </div>
             </div>
         </div>
@@ -98,7 +98,7 @@
                         <td class="px-6 py-4 whitespace-nowrap">{{ $r->due_date }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
-                {{ $r->status == 'active' ? 'bg-blue-100 text-blue-800' : ($r->status == 'delivered' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800') }}">
+                {{ $r->status == 'active' ? 'bg-blue-100 text-blue-800' : ($r->status == 'returned' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800') }}">
                                 {{ ucfirst($r->status) }}
                             </span>
                         </td>

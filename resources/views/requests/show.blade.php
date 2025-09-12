@@ -26,11 +26,11 @@
     <x-layouts.app.custom-sidebar />
 
     <main class="flex-1 p-4 sm:p-6 lg:pt-10 lg:pb-10 bg-white min-h-screen">
-
-
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
             <div>
-                <h1 class="text-3xl sm:text-4xl font-bold text-gray-800">Book Request Number #{{ $request->request_number ?? $request->id }}</h1>
+                <h1 class="text-3xl sm:text-4xl font-bold text-gray-800">
+                    Book Request Number #{{ $request->request_number ?? $request->id }}
+                </h1>
                 <p class="text-gray-600 mt-1">Here you can see all details from the book request</p>
             </div>
         </div>
@@ -39,7 +39,7 @@
         <p><strong>User:</strong> {{ $request->user->name ?? '—' }} ({{ $request->user->email ?? '' }})</p>
         <p><strong>Start Date:</strong> {{ $request->start_date }}</p>
         <p><strong>Due date:</strong> {{ $request->due_date }}</p>
-        <p><strong>Status:</strong> {{ $request->status }}</p>
+        <p><strong>Status:</strong> {{ ucfirst($request->status) }}</p>
 
         @if($request->photo)
         <p><strong>Photo:</strong><br>
@@ -49,7 +49,33 @@
 
         <p><strong>Notes:</strong><br>{{ $request->notes }}</p>
 
-        <p><a href="{{ route('requests.index') }}">Back</a></p>
-        </body>
+        @if(isset($canReview) && $canReview)
+
+        <hr class="my-6">
+        <h2 class="text-xl font-semibold text-gray-800 mb-3">Leave a Review</h2>
+        <form method="POST" action="{{ route('reviews.store', $request->id) }}">
+            @csrf
+            <textarea name="content" rows="4"
+                class="w-full border rounded-lg p-2 text-gray-800 focus:ring focus:ring-blue-300"
+                placeholder="Write your review here..." required></textarea>
+            <button type="submit"
+                class="mt-3 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                Submit Review
+            </button>
+        </form>
+
+
+        @endif
+
+        <p class="mt-6">
+            <a href="{{ route('requests.index') }}" class="text-blue-600 hover:underline">Back</a>
+        </p>
+        @if(session('success'))
+        <div class="mb-4 p-4 bg-green-100 text-green-800 rounded shadow">
+            {{ session('success') }}
+        </div>
+        @endif
+    </main>
+</div>
 
 </html>

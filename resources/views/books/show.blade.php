@@ -52,6 +52,17 @@
                         @endif
 
                         @endauth
+                        <h2 class="text-xl font-bold mt-6">Reviews</h2>
+
+                        @forelse($book->reviews as $review)
+                        <div class="p-4 border-b">
+                            <p class="font-semibold">{{ $review->user->name }}</p>
+                            <p>{{ $review->content }}</p>
+                        </div>
+                        @empty
+                        <p class="text-gray-500">No active reviews yet.</p>
+                        @endforelse
+
 
                     </div>
                 </div>
