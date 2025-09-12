@@ -28,22 +28,18 @@ class GoogleBooksService
             $title = $volume['title'] ?? 'Sem título';
             $googleId = $item['id'];
 
-            // Verifica se já existe um livro com este google_id
             $book = Book::firstWhere('google_id', $googleId);
 
             if (!$book) {
-                // Publisher
-                $publisherName = $volume['publisher'] ?? 'Desconhecido';
+                $publisherName = $volume['publisher'] ?? 'Unknown';
                 $publisher = Publisher::firstOrCreate(['name' => $publisherName]);
 
-                // Evita duplicar livros com mesmo título e publisher
                 $existingBook = Book::where('name', $title)
                                     ->where('publisher_id', $publisher->id)
                                     ->first();
                 if ($existingBook) {
-                    $book = $existingBook; // usa o existente
+                    $book = $existingBook; 
                 } else {
-                    // Cria o livro
                     $book = Book::create([
                         'google_id'    => $googleId,
                         'isbn'         => $this->extractIsbn($volume),
@@ -56,7 +52,6 @@ class GoogleBooksService
                 }
             }
 
-            // Authors
             if (!empty($volume['authors'])) {
                 $authorIds = [];
                 foreach ($volume['authors'] as $authorName) {
