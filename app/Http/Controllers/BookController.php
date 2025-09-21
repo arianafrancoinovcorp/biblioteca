@@ -11,6 +11,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
+use App\Models\BookAvailabilityAlert;
 
 class BookController extends Controller
 {
@@ -210,7 +211,6 @@ class BookController extends Controller
             'isbn' => 'required|string|unique:books,isbn,' . $id,
             'publisher_id' => 'required|exists:publishers,id',
             'price' => 'required|numeric',
-            // outros campos...
         ]);
 
         $book = Book::findOrFail($id);

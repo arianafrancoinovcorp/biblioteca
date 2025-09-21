@@ -23,7 +23,11 @@
 
     <div class="fixed inset-0 bg-black opacity-50 z-20 lg:hidden hidden" id="overlay"></div>
 
+    @if(auth()->user()->role === 'admin')
     <x-layouts.app.custom-sidebar />
+    @else
+    <x-layouts.app.users-sidebar />
+    @endif
 
     <main class="flex-1 p-4 sm:p-6 lg:pt-10 lg:pb-10 bg-white min-h-screen">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
@@ -47,8 +51,6 @@
         </p>
         @endif
 
-        <p><strong>Notes:</strong><br>{{ $request->notes }}</p>
-
         @if(isset($canReview) && $canReview)
 
         <hr class="my-6">
@@ -58,18 +60,20 @@
             <textarea name="content" rows="4"
                 class="w-full border rounded-lg p-2 text-gray-800 focus:ring focus:ring-blue-300"
                 placeholder="Write your review here..." required></textarea>
-            <button type="submit"
-                class="mt-3 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
-                Submit Review
-            </button>
-        </form>
 
+            <div class="mt-4 flex justify-end gap-x-2">
+                <button
+                    class="btn btn-custom" type="submit">Submit Review
+                </button>
+                <a href="{{ route('requests.index') }}"
+                    class="bg-blue-900 text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition">
+                    Back
+                </a>
+            </div>
+        </form>
 
         @endif
 
-        <p class="mt-6">
-            <a href="{{ route('requests.index') }}" class="text-blue-600 hover:underline">Back</a>
-        </p>
         @if(session('success'))
         <div class="mb-4 p-4 bg-green-100 text-green-800 rounded shadow">
             {{ session('success') }}

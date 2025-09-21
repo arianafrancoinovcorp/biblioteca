@@ -85,6 +85,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/reviews/{id}', [ReviewsController::class, 'show'])->name('reviews.show');
         Route::put('/reviews/{id}', [ReviewsController::class, 'update'])->name('reviews.update');
     });
+
+    Route::post('/books/{book}/alert', [RequestsController::class, 'alert'])->name('books.alert')->middleware('auth');
     
 });
 

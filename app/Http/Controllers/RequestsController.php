@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\BookRequestConfirmed;
 use App\Models\Review;
 use Carbon\Carbon;
+use App\Models\BookAvailabilityAlert;
+use App\Mail\BookAvailable;
 
 class RequestsController extends Controller
 {
@@ -21,22 +23,14 @@ class RequestsController extends Controller
 
     public function index()
     {
-        if (Auth::user()->is_admin) {
-            $requests = BookRequests::with('book', 'user')
-                ->orderByDesc('start_date')
-                ->paginate(10);
-        } else {
-            $requests = BookRequests::with('book')
-                ->where('user_id', Auth::id())
-                ->orderByDesc('start_date')
-                ->paginate(10);
-        }
+        $requests = Auth::user()->is_admin
+            ? BookRequests::with('book', 'user')->orderByDesc('start_date')->paginate(10)
+            : BookRequests::with('book')->where('user_id', Auth::id())->orderByDesc('start_date')->paginate(10);
 
         $activeRequestsCount = BookRequests::where('status', 'active')->count();
         $last30DaysCount = BookRequests::where('start_date', '>=', Carbon::now()->subDays(30))->count();
         $returnedTodayCount = BookRequests::where('status', 'returned')
-            ->whereDate('return_date', Carbon::today())
-            ->count();
+            ->whereDate('return_date', Carbon::today())->count();
 
         return view('requests.index', compact('requests', 'activeRequestsCount', 'last30DaysCount', 'returnedTodayCount'));
     }
@@ -53,13 +47,13 @@ class RequestsController extends Controller
             'photo' => 'nullable|image|max:2048',
         ]);
 
-        if (BookRequests::hasReachedLimit(auth()->id())) {
+        if (BookRequests::hasReachedLimit(Auth::id())) {
             return redirect()->back()->withErrors('You already have 3 active book requests.');
         }
 
         $data = [
             'book_id' => $request->book_id,
-            'user_id' => auth()->id(),
+            'user_id' => Auth::id(),
             'status' => 'active',
             'notes' => $request->notes,
             'start_date' => now(),
@@ -73,17 +67,13 @@ class RequestsController extends Controller
         $bookRequest = BookRequests::create($data);
         $bookRequest->load('user', 'book');
 
-        Mail::to($bookRequest->user->email)
-            ->send(new BookRequestConfirmed($bookRequest));
+        if ($bookRequest->user && $bookRequest->user->email) {
+           // Mail::to($bookRequest->user->email)->send(new BookRequestConfirmed($bookRequest));
+        }
 
-        $adminEmails = User::where('is_admin', 1)
-            ->whereNotNull('email')
-            ->pluck('email')
-            ->toArray();
-
+        $adminEmails = User::where('is_admin', 1)->whereNotNull('email')->pluck('email')->toArray();
         if (!empty($adminEmails)) {
-            Mail::bcc($adminEmails)
-                ->send(new BookRequestConfirmed($bookRequest));
+           // Mail::bcc($adminEmails)->send(new BookRequestConfirmed($bookRequest));
         }
 
         return redirect()->route('requests.index')->with('success', 'Book requested successfully!');
@@ -98,35 +88,11 @@ class RequestsController extends Controller
         }
 
         $existingReview = Review::where('requests_id', $bookRequest->id)
-            ->where('user_id', Auth::id())
-            ->first();
+            ->where('user_id', Auth::id())->first();
 
-        $canReview = (
-            $bookRequest->status === 'returned' &&
-            $bookRequest->user_id === Auth::id() &&
-            !$existingReview
-        );
+        $canReview = ($bookRequest->status === 'returned' && $bookRequest->user_id === Auth::id() && !$existingReview);
 
-        return view('requests.show', [
-            'request' => $bookRequest,
-            'canReview' => $canReview,
-        ]);
-    }
-
-    public function update(Request $request, $id)
-    {
-
-        if (!Auth::user()->is_admin) {
-            abort(403, 'Access denied');
-        }
-
-        $bookRequest = BookRequests::findOrFail($id);
-        $bookRequest->status = 'returned';
-        $bookRequest->return_date = now();
-        $bookRequest->save();
-
-        return redirect()->route('requests.show', $bookRequest->id)
-            ->with('success', 'Please leave a review.');
+        return view('requests.show', ['request' => $bookRequest, 'canReview' => $canReview]);
     }
 
     public function returnBook(BookRequests $bookRequest)
@@ -139,8 +105,35 @@ class RequestsController extends Controller
         $bookRequest->return_date = now();
         $bookRequest->save();
 
+        // Enviar alertas apenas se existir user e email
+        $alerts = BookAvailabilityAlert::with('user')
+            ->where('book_id', $bookRequest->book_id)
+            ->where('sent', false)
+            ->get();
+
+        foreach ($alerts as $alert) {
+            if ($alert->user && $alert->user->email) {
+                try {
+                    // Mail::to($alert->user->email)->send(new BookAvailable($bookRequest->book));
+                } catch (\Exception $e) {
+                }
+            }
+            $alert->sent = true;
+            $alert->save();
+        }
+
         return redirect()->route('requests.show', $bookRequest->id)
-            ->with('success', 'Please leave a review.');
+            ->with('success', 'Book returned sucssesfully, please leave a review');
+    }
+
+    public function alert(Book $book)
+    {
+        BookAvailabilityAlert::firstOrCreate([
+            'book_id' => $book->id,
+            'user_id' => Auth::id(),
+        ]);
+
+        return back()->with('success', 'You will be notified when this book becomes available!');
     }
 
     public function userHistory($userId)

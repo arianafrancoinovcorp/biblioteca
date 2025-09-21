@@ -59,12 +59,19 @@
                     <button class="btn btn-custom mt-5">Go to book requests</button>
                 </a>
             </div>
+
+            <div class="bg-gray-800 p-6 rounded-lg shadow-md">
+                <h3 class="font-semibold text-xl mb-3 text-white">Reviews</h3>
+                <p class="text-gray-300">View and manage Reviews.</p>
+                <a href="{{ route('admin.reviews.index') }}">
+                    <button class="btn btn-custom mt-5">Go to book requests</button>
+                </a>
+            </div>
         </div>
     </main>
 </div>
 
 <script>
-    // Script simples para abrir/fechar sidebar em telas pequenas
     const btnOpen = document.getElementById('btn-open-sidebar');
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('overlay');
@@ -79,7 +86,4 @@
         overlay.classList.add('hidden');
     });
 </script>
-
-
-
 <x-layouts.app.custom-footer />

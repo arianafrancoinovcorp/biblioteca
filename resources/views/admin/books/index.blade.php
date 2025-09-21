@@ -91,68 +91,62 @@
             </a>
         </form>
 
-        <div class="overflow-x-auto">
-            <table class="min-w-full border border-gray-300 text-black rounded-lg shadow-sm overflow-hidden">
-                <thead class="bg-[#444A68] text-white">
-                    <tr>
-                        <th class="border px-4 py-2 text-left">ISBN</th>
-                        <th class="border px-4 py-2 text-left">Name</th>
-                        <th class="border px-4 py-2 text-left">Publisher</th>
-                        <th class="border px-4 py-2 text-left">Author</th>
-                        <th class="border px-4 py-2 text-left">Bibliography</th>
-                        <th class="border px-4 py-2 text-left">Cover</th>
-                        <th class="border px-4 py-2 text-left">Price</th>
-                        <th class="border px-4 py-2 text-left">Status</th>
-                        <th class="border px-4 py-2 text-left">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($books as $book)
-                    <tr class="hover:bg-gray-100">
-                        <td class="border px-4 py-2">{{ $book->isbn }}</td>
-                        <td class="border px-4 py-2">{{ $book->name }}</td>
-                        <td class="border px-4 py-2">{{ $book->publisher->name ?? '-' }}</td>
-                        <td class="border px-4 py-2">
-                            @foreach ($book->authors as $author)
-                            {{ $author->name }}@if (!$loop->last), @endif
-                            @endforeach
-                        </td>
-                        <td class="border px-4 py-2">{{ $book->bibliography }}</td>
-                        <td class="border px-4 py-2">
-                            @if ($book->cover_image)
-                            <img src="{{ $book->cover_image }}" alt="{{ $book->name }}" class="h-12 w-12 rounded object-cover" />
-                            @else
-                            -
-                            @endif
-                        </td>
-                        <td class="border px-4 py-2">€{{ number_format($book->price, 2) }}</td>
-                        <td class="border px-4 py-2">
-                            @if ($book->isAvailable())
-                            <span class="text-green-600 font-semibold">Available</span>
-                            @else
-                            <span class="text-red-600 font-semibold">Unavailable</span>
-                            @endif
-                        </td>
-                        <td class="border px-4 py-2 space-x-2 whitespace-nowrap">
-                            <a href="{{ route('books.edit', $book->id) }}"
-                                class="inline-block bg-gray-700 hover:bg-gray-600 text-white font-semibold px-3 py-1 rounded">
-                                Edit
-                            </a>
-                            <form action="{{ route('books.destroy', $book->id) }}" method="POST" class="inline-block"
-                                onsubmit="return confirm('Are you sure you want to delete this book?');">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit"
-                                    class="bg-[#FE7F63] hover:bg-[#e76b53] text-white font-semibold px-3 py-1 rounded">
-                                    Delete
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
+        <div class="overflow-x-auto w-full rounded-lg shadow">
+    <table class="min-w-full divide-y divide-gray-200 table-auto">
+        <thead class="bg-gray-50">
+            <tr>
+                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ISBN</th>
+                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Publisher</th>
+                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Author</th>
+                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bibliography</th>
+                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cover</th>
+                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
+                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+            </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200 text-gray-900">
+            @foreach ($books as $book)
+            <tr class="hover:bg-gray-50">
+                <td class="px-4 py-2 whitespace-nowrap">{{ $book->isbn }}</td>
+                <td class="px-4 py-2 max-w-[150px] truncate">{{ $book->name }}</td>
+                <td class="px-4 py-2 whitespace-nowrap">{{ $book->publisher->name ?? '-' }}</td>
+                <td class="px-4 py-2 max-w-[200px] truncate">
+                    @foreach ($book->authors as $author)
+                        {{ $author->name }}@if (!$loop->last), @endif
                     @endforeach
-                </tbody>
-            </table>
-        </div>
+                </td>
+                <td class="px-4 py-2 max-w-[250px] truncate">{{ $book->bibliography }}</td>
+                <td class="px-4 py-2 whitespace-nowrap">
+                    @if ($book->cover_image)
+                        <img src="{{ $book->cover_image }}" alt="{{ $book->name }}" class="h-12 w-12 rounded object-cover" />
+                    @else
+                        -
+                    @endif
+                </td>
+                <td class="px-4 py-2 whitespace-nowrap">€{{ number_format($book->price, 2) }}</td>
+                <td class="px-4 py-2 whitespace-nowrap">
+                    @if ($book->isAvailable())
+                        <span class="text-green-600 font-semibold">Available</span>
+                    @else
+                        <span class="text-red-600 font-semibold">Unavailable</span>
+                    @endif
+                </td>
+                <td class="px-4 py-2 whitespace-nowrap flex gap-2">
+                    <a href="{{ route('books.edit', $book->id) }}" class="bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded">Edit</a>
+                    <form action="{{ route('books.destroy', $book->id) }}" method="POST" onsubmit="return confirm('Are you sure?');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="bg-[#FE7F63] hover:bg-[#e76b53] text-white px-3 py-1 rounded">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+</div>
+
 
         {{-- Pagination --}}
         <div class="mt-6">
