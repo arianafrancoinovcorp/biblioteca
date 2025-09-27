@@ -13,6 +13,8 @@ use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Http;
 use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\ReviewsController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
 
 // Home
 Route::get('/', [WelcomeController::class, 'index'])->name('home');
@@ -84,7 +86,17 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/reviews/{id}/edit', [ReviewsController::class, 'edit'])->name('reviews.edit');
         Route::get('/reviews/{id}', [ReviewsController::class, 'show'])->name('reviews.show');
         Route::put('/reviews/{id}', [ReviewsController::class, 'update'])->name('reviews.update');
+        Route::get('/orders', [AdminController::class, 'orders'])->name('orders');
     });
+
+    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+    Route::post('/cart/add/{book}', [CartController::class, 'add'])->name('cart.add');
+    Route::delete('/cart/remove/{cartItem}', [CartController::class, 'remove'])->name('cart.remove');
+    Route::patch('/cart/update/{cartItem}', [CartController::class, 'update'])->name('cart.update');
+
+    Route::get('/checkout', [CheckoutController::class, 'showForm'])->name('checkout.form');
+    Route::post('/checkout', [CheckoutController::class, 'process'])->name('checkout.process');
+    Route::get('/checkout/success', [CheckoutController::class, 'success'])->name('checkout.success');
     
 });
 

@@ -25,22 +25,37 @@
 
   <div class="navbar-end space-x-2">
     @auth
-      @if(Auth::user()->role === 'admin')
-        <a href="{{ route('admin.dashboard') }}">
-          <button class="btn btn-custom">Dashboard</button>
-        </a>
-      @else
-        <a href="{{ route('users.dashboard') }}">
-          <button class="btn btn-custom">Dashboard</button>
-        </a>
-      @endif
+
+    @if(Auth::user()->role === 'admin')
+    <a href="{{ route('admin.dashboard') }}">
+      <button class="btn btn-custom">Dashboard</button>
+    </a>
     @else
-      <a href="{{ route('login') }}">
-        <button class="btn btn-custom">Log in</button>
-      </a>
-      <a href="{{ route('register') }}">
-        <button class="btn btn-custom">Register</button>
-      </a>
+    <a href="{{ route('users.dashboard') }}">
+      <button class="btn btn-custom">Dashboard</button>
+    </a>
+    @endif
+    <a href="{{ route('cart.index') }}" class="relative flex items-center">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V5a4 4 0 10-8 0v6M5 11h14l1 10H4L5 11z" />
+      </svg>
+
+      @php
+      $cartCount = \App\Models\CartItem::where('user_id', Auth::id())->sum('quantity');
+      @endphp
+      @if($cartCount > 0)
+      <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+        {{ $cartCount }}
+      </span>
+      @endif
+    </a>
+    @else
+    <a href="{{ route('login') }}">
+      <button class="btn btn-custom">Log in</button>
+    </a>
+    <a href="{{ route('register') }}">
+      <button class="btn btn-custom">Register</button>
+    </a>
     @endauth
   </div>
 </div>

@@ -42,6 +42,14 @@
             </a>
         </li>
 
+        <li>
+            <a href="{{ route('admin.orders') }}"
+                class="flex items-center px-4 py-2 rounded-r-md bg-gray-700 font-semibold text-white
+       {{ request()->routeIs('admin.orders.*') ? 'active-border' : '' }}">
+                Orders
+            </a>
+        </li>
+
     </ul>
 
     <div class="mt-auto bg-gray-700 rounded-lg p-4">

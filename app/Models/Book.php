@@ -79,7 +79,35 @@ class Book extends Model
     private function extractKeywords($text)
     {
         $stopWords = [
-            'a','an','the','and','or','but','of','in','on','with','at','by','for','to','from','is','are','was','were','be','been','being','as','that','this','these','those','it','its'
+            'a',
+            'an',
+            'the',
+            'and',
+            'or',
+            'but',
+            'of',
+            'in',
+            'on',
+            'with',
+            'at',
+            'by',
+            'for',
+            'to',
+            'from',
+            'is',
+            'are',
+            'was',
+            'were',
+            'be',
+            'been',
+            'being',
+            'as',
+            'that',
+            'this',
+            'these',
+            'those',
+            'it',
+            'its'
         ];
 
         $text = strtolower($text);
@@ -87,10 +115,20 @@ class Book extends Model
         $words = explode(' ', $text);
 
         // Remove stopwords and short words
-        $words = array_filter($words, function($word) use ($stopWords) {
+        $words = array_filter($words, function ($word) use ($stopWords) {
             return !in_array($word, $stopWords) && strlen($word) > 3;
         });
 
         return array_values($words);
+    }
+
+    public function cartItems()
+    {
+        return $this->hasMany(\App\Models\CartItem::class);
+    }
+
+    public function orderItems()
+    {
+        return $this->hasMany(\App\Models\OrderItem::class);
     }
 }

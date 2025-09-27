@@ -74,4 +74,14 @@ class User extends Authenticatable
     {
         return $this->role === 'citizen';
     }
+
+    public function cartItems()
+    {
+        return $this->hasMany(\App\Models\CartItem::class);
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(\App\Models\Order::class);
+    }
 }
