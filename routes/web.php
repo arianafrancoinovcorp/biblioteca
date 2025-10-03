@@ -87,6 +87,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/reviews/{id}', [ReviewsController::class, 'show'])->name('reviews.show');
         Route::put('/reviews/{id}', [ReviewsController::class, 'update'])->name('reviews.update');
         Route::get('/orders', [AdminController::class, 'orders'])->name('orders');
+        Route::get('/logs', [AdminController::class, 'logs'])->name('logs.index');
     });
 
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');

@@ -9,6 +9,7 @@ use App\Models\OrderItem;
 use Illuminate\Support\Facades\Auth;
 use Stripe\Stripe;
 use Stripe\Checkout\Session as StripeSession;
+use App\Helpers\LogHelper;
 
 class CheckoutController extends Controller
 {
@@ -75,6 +76,7 @@ class CheckoutController extends Controller
             'success_url' => route('checkout.success', [], true) . '?session_id={CHECKOUT_SESSION_ID}',
             'cancel_url' => route('cart.index'),
         ]);
+        LogHelper::record('Orders', null, 'User started checkout process');
 
         return redirect($session->url);
     }
@@ -133,6 +135,7 @@ class CheckoutController extends Controller
             'checkout_country',
             'checkout_cart_items',
         ]);
+        LogHelper::record('Orders', $order->id, 'User completed checkout and payment successfully');
 
         return view('checkout.success', compact('order'));
     }

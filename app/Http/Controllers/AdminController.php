@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Order;
+use App\Models\Log;
 
 
 class AdminController extends Controller
@@ -27,11 +28,17 @@ class AdminController extends Controller
     public function orders()
     {
         $orders = Order::with('user')
-        ->orderBy('created_at', 'desc')
-        ->paginate(10);
-    
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
 
         return view('admin.orders.index', compact('orders'));
+    }
+
+    public function logs()
+    {
+        $logs = Log::with('user')->orderBy('created_at', 'desc')->paginate(20);
+        return view('admin.logs.index', compact('logs'));
     }
 
     /**

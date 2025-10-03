@@ -11,6 +11,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
+use App\Helpers\LogHelper;
 
 class BookController extends Controller
 {
@@ -158,12 +159,11 @@ class BookController extends Controller
 
         $book = Book::create($validated);
 
-        // Associar autores (se houver)
         if (!empty($request->author_ids)) {
             $book->authors()->sync($request->author_ids);
         }
-
-        return redirect()->route('books.index')->with('success', 'Livro criado com sucesso!');
+        LogHelper::record('Books', $book->id, "Created book '{$book->name}'");
+        return redirect()->route('books.index')->with('success', 'Book created successfully!');
     }
 
 
@@ -210,7 +210,11 @@ class BookController extends Controller
             'isbn' => 'required|string|unique:books,isbn,' . $id,
             'publisher_id' => 'required|exists:publishers,id',
             'price' => 'required|numeric',
-            // outros campos...
+            'bibliography' => 'nullable|string',
+            'cover_image' => 'nullable|image|max:2048',
+            'author_ids' => 'nullable|array',
+            'author_ids.*' => 'exists:authors,id',
+            
         ]);
 
         $book = Book::findOrFail($id);
@@ -219,7 +223,7 @@ class BookController extends Controller
         if ($request->filled('author_ids')) {
             $book->authors()->sync($request->author_ids);
         }
-
+        LogHelper::record('Books', $book->id, "Updated book '{$book->name}'");
         return redirect()->route('books.index')->with('success', 'Book updated successfully');
     }
 
@@ -233,8 +237,10 @@ class BookController extends Controller
         }
 
         $book = Book::findOrFail($id);
+        $bookName = $book->name;
         $book->delete();
 
+        LogHelper::record('Books', $id, "Deleted book '{$bookName}'");
         return redirect()->route('books.index')->with('success', 'Book deleted successfully');
     }
 }

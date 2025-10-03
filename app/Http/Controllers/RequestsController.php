@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\BookRequestConfirmed;
 use App\Models\Review;
 use Carbon\Carbon;
+use App\Helpers\LogHelper;
 
 class RequestsController extends Controller
 {
@@ -73,6 +74,8 @@ class RequestsController extends Controller
         $bookRequest = BookRequests::create($data);
         $bookRequest->load('user', 'book');
 
+        LogHelper::record('Requests', $bookRequest->id, "User requested book '{$bookRequest->book->name}'");
+
         Mail::to($bookRequest->user->email)
             ->send(new BookRequestConfirmed($bookRequest));
 
@@ -124,6 +127,8 @@ class RequestsController extends Controller
         $bookRequest->status = 'returned';
         $bookRequest->return_date = now();
         $bookRequest->save();
+
+        LogHelper::record('Requests', $bookRequest->id, "Book was returned successfully");
 
         return redirect()->route('requests.show', $bookRequest->id)
             ->with('success', 'Please leave a review.');

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Helpers\LogHelper;
 
 class UserController extends Controller
 {
@@ -62,6 +63,7 @@ class UserController extends Controller
             'password' => Hash::make($request->password),
             'role' => 'admin',
         ]);
+        LogHelper::record('Users', $user->id, "Created admin user '{$user->email}'");
 
         return redirect()->route('users.index')->with('success', 'Admin successfully created.');
     }
@@ -103,7 +105,7 @@ class UserController extends Controller
         }
     
         $user->save();
-    
+        LogHelper::record('Users', $user->id, "User updated successfully.");
         return redirect()->route('users.index')->with('success', 'User updated successfully.');
     }
 
@@ -114,7 +116,8 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
         $user->delete();
-    
+        
+        LogHelper::record('Users', $id, "Deleted user '{$userEmail}'");
         return redirect()->route('users.index')->with('success', 'User deleted successfully.');
     }
     

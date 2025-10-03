@@ -49,6 +49,14 @@
                 Orders
             </a>
         </li>
+        <li>
+            <a href="{{ route('admin.logs.index') }}"
+                class="flex items-center px-4 py-2 rounded-r-md bg-gray-700 font-semibold text-white
+       {{ request()->routeIs('admin.logs.*') ? 'active-border' : '' }}">
+                Logs
+            </a>
+        </li>
+
 
     </ul>
 
