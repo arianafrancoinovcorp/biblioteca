@@ -42,42 +42,41 @@
                 <p class="text-gray-700"><strong>Price:</strong> €{{ number_format($book->price, 2) }}</p>
 
                 @auth
-                @if($book->isAvailable())
-                <a href="{{ route('requests.create', $book->id) }}"
-                    class="mt-4 inline-block bg-[#FE7F63] hover:bg-[#e76b53] py-2 px-4 rounded text-white font-semibold transition">
-                    Request this book
-                </a>
-                @endif
-                <form action="{{ route('cart.add', $book->id) }}" method="POST" class="mt-4">
-        @csrf
-        <button type="submit"
-            class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded font-semibold">
-            Add to cart
-        </button>
-    </form>
+                    @if($book->isAvailable())
+                        <a href="{{ route('requests.create', $book->id) }}"
+                           class="mt-4 inline-block bg-[#FE7F63] hover:bg-[#e76b53] py-2 px-4 rounded text-white font-semibold transition">
+                           Request this book
+                        </a>
+                    @endif
+                    @csrf
+                    <button type="submit"
+                        class="mt-4 inline-block bg-yellow-500 hover:bg-yellow-600 py-2 px-4 rounded text-white font-semibold transition">
+                        Notify me when available
+                    </button>
                 @endauth
+
             </div>
         </div>
 
         <!-- Reviews -->
-        <div class="bg-white rounded-xl shadow-md p-6 mt-6">
-            <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center">Reviews</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                @forelse($book->reviews as $review)
-                <div class="bg-[#F4F5FE] rounded-lg p-4 hover:shadow-lg transition duration-300">
-                    <div class="flex items-center mb-2">
-                        <div class="w-10 h-10 rounded-full bg-[#FE7F63] flex items-center justify-center text-white font-bold text-sm">
-                            {{ strtoupper(substr($review->user->name, 0, 1)) }}
-                        </div>
-                        <p class="ml-3 font-semibold text-gray-800">{{ $review->user->name }}</p>
-                    </div>
-                    <p class="text-gray-700">{{ $review->content }}</p>
+<div class="bg-white rounded-xl shadow-md p-6 mt-6">
+<h2 class="text-2xl font-bold text-gray-900 mb-6 text-center">Reviews</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    @forelse($book->reviews as $review)
+        <div class="bg-[#F4F5FE] rounded-lg p-4 hover:shadow-lg transition duration-300">
+            <div class="flex items-center mb-2">
+                <div class="w-10 h-10 rounded-full bg-[#FE7F63] flex items-center justify-center text-white font-bold text-sm">
+                    {{ strtoupper(substr($review->user->name, 0, 1)) }}
                 </div>
-                @empty
-                <p class="text-gray-500 col-span-full">No active reviews yet.</p>
-                @endforelse
+                <p class="ml-3 font-semibold text-gray-800">{{ $review->user->name }}</p>
             </div>
+            <p class="text-gray-700">{{ $review->content }}</p>
         </div>
+    @empty
+        <p class="text-gray-500 col-span-full">No active reviews yet.</p>
+    @endforelse
+</div>
+</div>
 
 
         <!-- Related Books -->

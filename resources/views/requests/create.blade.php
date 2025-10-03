@@ -38,7 +38,7 @@
 
                             <input type="file" name="photo" id="photo" class="hidden" onchange="updateFileName()">
                         </div>
-                        <div class="flex justify-end">
+                        <div class="flex justify-end">                                                
                             <button class="btn btn-custom" type="submit">Submit Request</button>
                         </div>
                     </form>

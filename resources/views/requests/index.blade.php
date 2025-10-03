@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<html lang="en">
 
 <head>
     <meta charset="utf-8" />
@@ -29,9 +30,13 @@
     @endif
 
     <main class="flex-1 p-4 sm:p-6 lg:pt-10 lg:pb-10 bg-white min-h-screen">
+        <button class="lg:hidden mb-4 text-gray-800 bg-gray-200 px-3 py-2 rounded-md"
+            id="btn-open-sidebar"
+            aria-label="Open sidebar">
+            Menu
+        </button>
 
-
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
             <div>
                 <h1 class="text-3xl sm:text-4xl font-bold text-gray-800">List of Book Requests</h1>
                 <p class="text-gray-600 mt-1">Here you can see all book requests</p>
@@ -75,11 +80,11 @@
         @endif
 
 
-        <div class="overflow-x-auto rounded-lg shadow">
-            <table class="min-w-full bg-white divide-y divide-gray-200">
+        <div class="flex-1 overflow-auto rounded-lg shadow">
+            <table class="min-w-full bg-white divide-y divide-gray-200 text-gray-900">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Request #</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Request</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Book</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Start Date</th>
@@ -92,7 +97,7 @@
                     @forelse($requests as $r)
                     <tr class="hover:bg-gray-50">
                         <td class="px-6 py-4 whitespace-nowrap">{{ $r->request_number ?? $r->id }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap">{{ $r->book->name ?? '—' }}</td>
+                        <td class="px-6 py-4 max-w-xs truncate">{{ $r->book->name ?? '—' }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">{{ $r->user->name ?? '—' }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">{{ $r->start_date }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">{{ $r->due_date }}</td>
@@ -132,6 +137,11 @@
             {{ session('success') }}
         </div>
         @endif
+
+        {{-- Pagination --}}
+        <div class="mt-6">
+            {{ $requests->links() }}
+        </div>
     </main>
 </div>
 

@@ -32,7 +32,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::paginate(2); // está como 2 dados mas podem ser mais, é só para mostrar na view
+        $users = User::paginate(10);
         return view('users.index', compact('users'));
     }
     

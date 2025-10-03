@@ -16,7 +16,7 @@
 
 <x-layouts.app.custom-header />
 
-<div class="flex flex-col lg:flex-row min-h-screen bg-gray-900 text-gray-300">
+<div class="flex flex-col lg:flex-row min-h-screen bg-gray-100 text-gray-900">
 
     <div class="fixed inset-0 bg-black opacity-50 z-20 lg:hidden hidden" id="overlay"></div>
 
@@ -24,70 +24,72 @@
 
     <main class="flex-1 p-4 sm:p-6 lg:pt-10 lg:pb-10 bg-white min-h-screen">
         <button class="lg:hidden mb-4 text-gray-800 bg-gray-200 px-3 py-2 rounded-md"
-            id="btn-open-sidebar"
-            aria-label="Open sidebar">
+            id="btn-open-sidebar" aria-label="Open sidebar">
             Menu
         </button>
 
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
-            <div class="text-center sm:text-left mb-4 sm:mb-0">
-                <h1 class="text-3xl sm:text-4xl font-bold text-[#171928]">List of Reviews</h1>
-                <p class="text-[#2e314d] mt-1">Here you can check and manage reviews submitted by users</p>
+            <div>
+                <h1 class="text-3xl sm:text-4xl font-bold text-gray-800">List of Reviews</h1>
+                <p class="text-gray-600 mt-1">Here you can check and manage reviews submitted by users</p>
             </div>
         </div>
 
-        <div class="overflow-x-auto">
-            <table class="min-w-full border border-gray-300 text-black rounded-lg shadow-sm overflow-hidden">
-                <thead class="bg-[#444A68] text-white">
+        <div class="flex-1 overflow-auto rounded-lg shadow">
+            <table class="min-w-full bg-white divide-y divide-gray-200">
+                <thead class="bg-gray-50">
                     <tr>
-                        <th class="border px-4 py-2 text-left">User</th>
-                        <th class="border px-4 py-2 text-left">Book</th>
-                        <th class="border px-4 py-2 text-left">Content</th>
-                        <th class="border px-4 py-2 text-left">Status</th>
-                        <th class="border px-4 py-2 text-left">Submitted at</th>
-                        <th class="border px-4 py-2 text-left">Actions</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Book</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Content</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Submitted At</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                     </tr>
                 </thead>
-                <tbody>
-                    @foreach ($reviews as $review)
-                        <tr class="hover:bg-gray-100">
-                            <td class="border px-4 py-2">{{ $review->user->name }}</td>
-                            <td class="border px-4 py-2">{{ $review->bookRequest->book->name ?? '-' }}</td>
-                            <td class="border px-4 py-2 max-w-xs truncate" title="{{ $review->content }}">
-                                {{ Str::limit($review->content, 50) }}
-                            </td>
-                            <td class="border px-4 py-2">
-                                @if ($review->status === 'active')
-                                    <span class="text-green-600 font-semibold">Approved</span>
-                                @elseif ($review->status === 'rejected')
-                                    <span class="text-red-600 font-semibold">Rejected</span>
-                                @else
-                                    <span class="text-yellow-600 font-semibold">Pending</span>
-                                @endif
-                            </td>
-                            <td class="border px-4 py-2">{{ $review->created_at->format('d/m/Y H:i') }}</td>
-                            <td class="border px-4 py-2 space-x-2 whitespace-nowrap">
-                                <a href="{{ route('admin.reviews.show', $review->id) }}"
-                                    class="inline-block bg-gray-700 hover:bg-gray-600 text-white font-semibold px-3 py-1 rounded">
-                                    View
-                                </a>
-                                <a href="{{ route('admin.reviews.edit', $review->id) }}"
-                                    class="inline-block bg-[#FE7F63] text-white font-semibold px-3 py-1 rounded">
-                                    Edit
-                                </a>
-                            </td>
-                        </tr>
-                    @endforeach
+
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @forelse ($reviews as $review)
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4 whitespace-nowrap">{{ $review->user->name }}</td>
+                        <td class="px-6 py-4 max-w-xs truncate">{{ $review->bookRequest->book->name ?? '-' }}</td>
+                        <td class="px-6 py-4 max-w-xs truncate" title="{{ $review->content }}">{{ Str::limit($review->content, 50) }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                                {{ $review->status === 'active' ? 'bg-blue-100 text-blue-800' : ($review->status === 'rejected' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800') }}">
+                                {{ ucfirst($review->status) }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">{{ $review->created_at->format('d/m/Y H:i') }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap flex items-center gap-2">
+                            <a href="{{ route('admin.reviews.show', $review->id) }}"
+                                class="text-indigo-600 hover:text-indigo-900 font-medium">View</a>
+                            <a href="{{ route('admin.reviews.edit', $review->id) }}"
+                                class="bg-[#FE7F63] text-white px-3 py-1 rounded text-sm">
+                                Edit
+                            </a>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="6" class="px-6 py-4 text-center text-gray-500">No Reviews at the moment</td>
+                    </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
 
         {{-- Pagination --}}
-        <div class="mt-6">
+        <div class="mt-4">
             {{ $reviews->links() }}
         </div>
+        @if(session('success'))
+        <div class="mb-4 p-4 bg-green-100 text-green-800 rounded shadow">
+            {{ session('success') }}
+        </div>
+        @endif
     </main>
 </div>
-</body>
 
+<x-layouts.app.custom-footer />
 </html>

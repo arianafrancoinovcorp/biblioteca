@@ -1,4 +1,4 @@
-<div class="navbar bg-[#171928] shadow-sm px-10">
+<div class="navbar bg-[#171928] shadow-sm w-full px-10">
   <div class="navbar-start">
     <div class="dropdown">
       <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">

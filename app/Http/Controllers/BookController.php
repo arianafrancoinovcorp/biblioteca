@@ -11,6 +11,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
+use App\Models\BookAvailabilityAlert;
 use App\Helpers\LogHelper;
 
 class BookController extends Controller
@@ -214,7 +215,6 @@ class BookController extends Controller
             'cover_image' => 'nullable|image|max:2048',
             'author_ids' => 'nullable|array',
             'author_ids.*' => 'exists:authors,id',
-            
         ]);
 
         $book = Book::findOrFail($id);

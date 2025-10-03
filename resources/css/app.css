@@ -4,19 +4,23 @@
 
 
 .btn-custom {
-    background-color: #FE7F63;
-    border-color: #FE7F63;
-    color: white;
-  }
-  
-  .btn-custom:focus {
-    background-color: #e67357;
-    border-color: #e67357;
-    color: white;
-  }
+  background-color: #FE7F63;
+  border-color: #FE7F63;
+  color: white;
+  box-shadow: none;       
+}
 
-  .active-border {
-    border-right-width: 4px;
-    border-right-style: solid;
-    border-right-color: #FE7F63;
+.btn-custom:focus,
+.btn-custom:active {
+  background-color: #e67357;
+  border-color: #e67357;
+  color: white;
+  box-shadow: none;         
+  outline: none;            
+}
+
+.active-border {
+  border-right-width: 4px;
+  border-right-style: solid;
+  border-right-color: #FE7F63;
 }

@@ -51,7 +51,7 @@ class ReviewsController extends Controller
             ->toArray();
 
         if (!empty($adminEmails)) {
-            Mail::to($adminEmails)->send(new NewReviewNotification($review));
+            // Mail::to($adminEmails)->send(new NewReviewNotification($review));
         }
 
         return redirect()->route('requests.show', $bookRequest->id)
@@ -113,7 +113,7 @@ class ReviewsController extends Controller
         LogHelper::record('Reviews', $review->id, "Admin changed review status from '{$oldStatus}' to '{$review->status}'");
 
         // citizen notification
-        Mail::to($review->user->email)->send(new ReviewStatusChanged($review));
+        //Mail::to($review->user->email)->send(new ReviewStatusChanged($review));
 
         return redirect()->route('admin.reviews.index')
             ->with('success', 'Review updated successfully.');
