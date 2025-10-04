@@ -97,13 +97,10 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/checkout', [CheckoutController::class, 'showForm'])->name('checkout.form');
     Route::post('/checkout', [CheckoutController::class, 'process'])->name('checkout.process');
-    Route::get('/checkout/success', [CheckoutController::class, 'success'])->name('checkout.success');
-    
+    Route::get('/checkout/success', [CheckoutController::class, 'success'])->name('checkout.success'); 
 });
 
-
 require __DIR__ . '/auth.php';
-
 
 // --------------------
 // Test
